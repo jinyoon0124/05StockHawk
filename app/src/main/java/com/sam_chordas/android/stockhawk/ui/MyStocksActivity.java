@@ -19,6 +19,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -68,16 +69,40 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         // The intent service is for executing immediate pulls from the Yahoo API
         // GCMTaskService can only schedule tasks, they cannot execute immediately
         mServiceIntent = new Intent(this, StockIntentService.class);
-        if (savedInstanceState == null) {
-            // Run the initialize task service so that some stocks appear upon an empty database
-            mServiceIntent.putExtra("tag", "init");
-            if (isConnected) {
-                startService(mServiceIntent);
-            } else {
-                networkToast();
-                //TODO: Handle emptyView here instead of toast message (JY)
+        String msg = "";
+//        if (savedInstanceState == null) {
+//            // Run the initialize task service so that some stocks appear upon an empty database
+//            mServiceIntent.putExtra("tag", "init");
+//            msg += "No stock is available. please add stock using fab button";
+//            if (isConnected) {
+//                startService(mServiceIntent);
+//            } else {
+//                networkToast();
+//                //TODO: Handle emptyView here instead of toast message (JY)
+//
+//            }
+//        }
+        final TextView emptyView = (TextView) findViewById(R.id.empty_view);
+        if(isConnected){
+            if(savedInstanceState==null){
+                msg += "No stock is available. please add stock using fab button";
+                //Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+                if (emptyView != null) {
+                    emptyView.setText(msg);
+                }
+                mServiceIntent.putExtra("tag", "init");
+            }
+            startService(mServiceIntent);
+        }else{
+            msg += "No network service is available. Please check internet connection";
+            //Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+            if (emptyView != null) {
+                emptyView.setText(msg);
             }
         }
+
+
+
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
@@ -89,6 +114,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                     public void onItemClick(View v, int position) {
                         //TODO: Launch Detail Activity with detailed information about the stock here (JY)
                         // do something on item click
+                        Toast.makeText(mContext, "Item Clicked", Toast.LENGTH_LONG).show();
                     }
                 }));
         recyclerView.setAdapter(mCursorAdapter);
@@ -123,6 +149,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                                         mServiceIntent.putExtra("tag", "add");
                                         mServiceIntent.putExtra("symbol", input.toString());
                                         startService(mServiceIntent);
+                                        emptyView.setVisibility(View.GONE);
                                     }
                                 }
                             })
