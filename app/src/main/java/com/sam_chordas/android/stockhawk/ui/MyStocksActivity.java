@@ -152,7 +152,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                                         mServiceIntent.putExtra("tag", "add");
                                         mServiceIntent.putExtra("symbol", input.toString());
                                         startService(mServiceIntent);
-                                        emptyView.setVisibility(View.GONE);
                                     }
                                 }
                             })
@@ -253,13 +252,20 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 null);
     }
 
+
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        int adapterSize = mCursorAdapter.getItemCount();
+//        Log.v("ADAPTER SIZE 1", String.valueOf(mCursorAdapter.getItemCount()));
         mCursorAdapter.swapCursor(data);
         mCursor = data;
         if(mCursorAdapter.getItemCount()!=0){
             emptyView.setVisibility(View.GONE);
         }
+        if(adapterSize!=0 && adapterSize==mCursorAdapter.getItemCount()){
+            Toast.makeText(this, "OPPS! THAT STOCK IS NOT AVAILABLE", Toast.LENGTH_LONG).show();
+        }
+//        Log.v("ADAPTER SIZE 2", String.valueOf(mCursorAdapter.getItemCount()));
         Log.v("ONLOADFINISHED CALLED", "ONLOADFINISHED IS CALLED");
     }
 
@@ -270,5 +276,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         Log.v("ONLOADERRESET IS CALLED", "ONLOADERRESET IS CALLED");
         mCursorAdapter.swapCursor(null);
     }
+
+
 
 }
