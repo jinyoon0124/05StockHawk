@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,10 +55,12 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     private Context mContext;
     private Cursor mCursor;
     boolean isConnected;
+    private TextView emptyView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v("ONCREATE IS CALLED", "ONCREATE IS CALLED");
         mContext = this;
         ConnectivityManager cm =
                 (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -82,26 +85,24 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 //
 //            }
 //        }
-        final TextView emptyView = (TextView) findViewById(R.id.empty_view);
-        if(isConnected){
-            if(savedInstanceState==null){
-                msg += "No stock is available. please add stock using fab button";
-                //Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-                if (emptyView != null) {
-                    emptyView.setText(msg);
-                }
-                mServiceIntent.putExtra("tag", "init");
-            }
-            startService(mServiceIntent);
-        }else{
-            msg += "No network service is available. Please check internet connection";
-            //Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-            if (emptyView != null) {
-                emptyView.setText(msg);
-            }
+
+        emptyView = (TextView) findViewById(R.id.empty_view);
+        emptyView.setVisibility(View.GONE);
+
+        if(isConnected && mCursorAdapter==null){
+            msg = getString(R.string.empty_stock_list);
+            emptyView.setVisibility(View.VISIBLE);
+            emptyView.setText(msg);
+
+            //mServiceIntent.putExtra("tag", "init");
+
+            //startService(mServiceIntent);
+        }else if(!isConnected){
+            msg = getString(R.string.empty_stock_list_no_connection);
+            emptyView.setVisibility(View.VISIBLE);
+            emptyView.setText(msg);
+
         }
-
-
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -118,6 +119,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                     }
                 }));
         recyclerView.setAdapter(mCursorAdapter);
+
+
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -193,6 +196,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     @Override
     public void onResume() {
         super.onResume();
+
+        Log.v("ONRESUME IS CALLED", "ONRESUME IS CALLED");
         getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
     }
 
@@ -238,6 +243,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // This narrows the return to only the stocks that are most current.
+
+        Log.v("ONCREATELOADER  CALLED", "ONCREATELOADER IS CALLED");
         return new CursorLoader(this, QuoteProvider.Quotes.CONTENT_URI,
                 new String[]{QuoteColumns._ID, QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE,
                         QuoteColumns.PERCENT_CHANGE, QuoteColumns.CHANGE, QuoteColumns.ISUP},
@@ -250,10 +257,17 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mCursorAdapter.swapCursor(data);
         mCursor = data;
+        if(mCursorAdapter.getItemCount()!=0){
+            emptyView.setVisibility(View.GONE);
+        }
+        Log.v("ONLOADFINISHED CALLED", "ONLOADFINISHED IS CALLED");
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(Loader<Cursor> loader)
+    {
+
+        Log.v("ONLOADERRESET IS CALLED", "ONLOADERRESET IS CALLED");
         mCursorAdapter.swapCursor(null);
     }
 

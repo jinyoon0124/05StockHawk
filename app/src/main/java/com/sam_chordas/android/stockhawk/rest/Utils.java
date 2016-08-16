@@ -90,7 +90,7 @@ public class Utils {
                 builder.withValue(QuoteColumns.ISUP, 1);
             }
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return builder.build();
