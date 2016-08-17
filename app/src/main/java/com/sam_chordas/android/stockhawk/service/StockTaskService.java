@@ -3,6 +3,7 @@ package com.sam_chordas.android.stockhawk.service;
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -38,6 +39,8 @@ public class StockTaskService extends GcmTaskService {
     private Context mContext;
     private StringBuilder mStoredSymbols = new StringBuilder();
     private boolean isUpdate;
+
+    public static final String ACTION_DATA_UPDATED = "com.example.sam_chordas.stockhawk.ACTION_DATA_UPDATED";
 
     public StockTaskService() {
     }
@@ -102,6 +105,10 @@ public class StockTaskService extends GcmTaskService {
             isUpdate = false;
             // get symbol from params.getExtra and build query
             String stockInput = params.getExtras().getString("symbol");
+            //
+            if(stockInput==null){
+                mContext.getContentResolver().notifyChange(QuoteProvider.Quotes.CONTENT_URI, null);
+            }
             try {
                 urlStringBuilder.append(URLEncoder.encode("\"" + stockInput + "\")", "UTF-8"));
             } catch (UnsupportedEncodingException e) {
@@ -138,6 +145,8 @@ public class StockTaskService extends GcmTaskService {
                     if(Utils.quoteJsonToContentVals(getResponse).get(0)!=null){
                         mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
                                 Utils.quoteJsonToContentVals(getResponse));
+                        //Log.v("PACKAGENAME : ", mContext.getPackageName());
+                        updateWidgets();
                     }else{
                         Log.v("ERRORROR", "OPPS! THAT STOCK IS NOT AVAILABLE");
                         //Toast.makeText(MyStocksActivity., "OOPS THAT STOCK IS NOT AVAilaBlE", Toast.LENGTH_LONG).show();
@@ -155,6 +164,11 @@ public class StockTaskService extends GcmTaskService {
         }
 
         return result;
+    }
+
+    private void updateWidgets() {
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED).setPackage(mContext.getPackageName());
+        mContext.sendBroadcast(dataUpdatedIntent);
     }
 
 }

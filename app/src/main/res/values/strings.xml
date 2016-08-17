@@ -12,4 +12,5 @@
     <string name="network_toast">Uh-oh! This app requires an internet connection</string>
     <string name="empty_stock_list">No stock is available. please add stock using fab button</string>
     <string name="empty_stock_list_no_connection">No network service is available. Please check internet connection</string>
+    <string name="title_widget_list">StockList Widget</string>
 </resources>
