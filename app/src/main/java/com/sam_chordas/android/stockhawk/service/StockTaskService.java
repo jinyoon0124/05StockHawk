@@ -78,15 +78,16 @@ public class StockTaskService extends GcmTaskService {
             initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
                     new String[]{"Distinct " + QuoteColumns.SYMBOL}, null,
                     null, null);
-            if (initQueryCursor.getCount() == 0 || initQueryCursor == null) {
-// Init task. Populates DB with quotes for the symbols seen below
-                try {
-                    urlStringBuilder.append(
-                            URLEncoder.encode("\"YHOO\",\"AAPL\",\"GOOG\",\"MSFT\")", "UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-            } else if (initQueryCursor != null) {
+//            if (initQueryCursor.getCount() == 0 || initQueryCursor == null) {
+//// Init task. Populates DB with quotes for the symbols seen below
+//                try {
+//                    urlStringBuilder.append(
+//                            URLEncoder.encode("\"YHOO\",\"AAPL\",\"GOOG\",\"MSFT\")", "UTF-8"));
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                }
+//            } else
+            if (initQueryCursor != null) {
                 DatabaseUtils.dumpCursor(initQueryCursor);
                 initQueryCursor.moveToFirst();
                 for (int i = 0; i < initQueryCursor.getCount(); i++) {
@@ -106,9 +107,10 @@ public class StockTaskService extends GcmTaskService {
             // get symbol from params.getExtra and build query
             String stockInput = params.getExtras().getString("symbol");
             //
-            if(stockInput==null){
-                mContext.getContentResolver().notifyChange(QuoteProvider.Quotes.CONTENT_URI, null);
-            }
+//            if(stockInput==null){
+//                mContext.getContentResolver().notifyChange(QuoteProvider.Quotes.CONTENT_URI, null);
+//            }
+
             try {
                 urlStringBuilder.append(URLEncoder.encode("\"" + stockInput + "\")", "UTF-8"));
             } catch (UnsupportedEncodingException e) {
@@ -137,20 +139,17 @@ public class StockTaskService extends GcmTaskService {
                                 null, null);
                     }
                     //Updated data applied to content resolver
-//                    ArrayList<ContentProviderOperation> test = new ArrayList<>();
-//                    test = Utils.quoteJsonToContentVals(getResponse);
-//                    for(int i =0; i<test.size(); i++){
-//                        Log.v("TEST RESULT", test.get(i).toString());
-//                    }
-                    if(Utils.quoteJsonToContentVals(getResponse).get(0)!=null){
+
+                    Log.v("GETRESPONSE", getResponse);
+                    if(Utils.quoteJsonToContentVals(getResponse).size()!=0 && Utils.quoteJsonToContentVals(getResponse).get(0)!=null){
                         mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
                                 Utils.quoteJsonToContentVals(getResponse));
                         //Log.v("PACKAGENAME : ", mContext.getPackageName());
                         updateWidgets();
                     }else{
                         Log.v("ERRORROR", "OPPS! THAT STOCK IS NOT AVAILABLE");
-                        //Toast.makeText(MyStocksActivity., "OOPS THAT STOCK IS NOT AVAilaBlE", Toast.LENGTH_LONG).show();
-                        result = GcmNetworkManager.RESULT_FAILURE;
+//                        Toast.makeText(MyStocksActivity.class.get, "OOPS THAT STOCK IS NOT AVAilaBlE", Toast.LENGTH_LONG).show();
+//                        result = GcmNetworkManager.RESULT_FAILURE;
                         mContext.getContentResolver().notifyChange(QuoteProvider.Quotes.CONTENT_URI, null);
                         return result;
                     }
