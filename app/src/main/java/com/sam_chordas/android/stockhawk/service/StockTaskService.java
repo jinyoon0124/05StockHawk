@@ -5,15 +5,18 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.OperationApplicationException;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
+import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.rest.Utils;
@@ -146,10 +149,19 @@ public class StockTaskService extends GcmTaskService {
                                 Utils.quoteJsonToContentVals(getResponse));
                         //Log.v("PACKAGENAME : ", mContext.getPackageName());
                         updateWidgets();
-                    }else{
+                    }else if(Utils.quoteJsonToContentVals(getResponse).size()==0){
+                        SharedPreferences spf = PreferenceManager.getDefaultSharedPreferences(mContext);
+                        SharedPreferences.Editor spe = spf.edit();
+                        spe.putString(mContext.getString(R.string.stock_availability_key), mContext.getString(R.string.stock_symbol_empty_msg));
+                        spe.apply();
+                        mContext.getContentResolver().notifyChange(QuoteProvider.Quotes.CONTENT_URI, null);
+                    }
+                    else{
                         Log.v("ERRORROR", "OPPS! THAT STOCK IS NOT AVAILABLE");
-//                        Toast.makeText(MyStocksActivity.class.get, "OOPS THAT STOCK IS NOT AVAilaBlE", Toast.LENGTH_LONG).show();
-//                        result = GcmNetworkManager.RESULT_FAILURE;
+                        SharedPreferences spf = PreferenceManager.getDefaultSharedPreferences(mContext);
+                        SharedPreferences.Editor spe = spf.edit();
+                        spe.putString(mContext.getString(R.string.stock_availability_key), mContext.getString(R.string.stock_availability_msg));
+                        spe.apply();
                         mContext.getContentResolver().notifyChange(QuoteProvider.Quotes.CONTENT_URI, null);
                         return result;
                     }

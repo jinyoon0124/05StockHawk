@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
@@ -262,10 +264,19 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         if(mCursorAdapter.getItemCount()!=0){
             emptyView.setVisibility(View.GONE);
         }
-        if(adapterSize!=0 && adapterSize==mCursorAdapter.getItemCount()){
-            Toast.makeText(this, "OPPS! THAT STOCK IS NOT AVAILABLE", Toast.LENGTH_LONG).show();
-        }
+//        if(adapterSize!=0 && adapterSize==mCursorAdapter.getItemCount()){
+//            Toast.makeText(this, "OPPS! THAT STOCK IS NOT AVAILABLE", Toast.LENGTH_LONG).show();
+//        }
 //        Log.v("ADAPTER SIZE 2", String.valueOf(mCursorAdapter.getItemCount()));
+        SharedPreferences spf = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String error_msg = spf.getString(mContext.getString(R.string.stock_availability_key), null);
+        if(error_msg!=null){
+            Toast.makeText(MyStocksActivity.this, error_msg, Toast.LENGTH_LONG).show();
+        }
+
+        SharedPreferences.Editor spe = spf.edit();
+        spe.remove(mContext.getString(R.string.stock_availability_key));
+        spe.commit();
         Log.v("ONLOADFINISHED CALLED", "ONLOADFINISHED IS CALLED");
     }
 

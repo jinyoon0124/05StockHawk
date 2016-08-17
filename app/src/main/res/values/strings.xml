@@ -13,4 +13,7 @@
     <string name="empty_stock_list">No stock is available. please add stock using fab button</string>
     <string name="empty_stock_list_no_connection">No network service is available. Please check internet connection</string>
     <string name="title_widget_list">StockList Widget</string>
+    <string name="stock_availability_key">availability</string>
+    <string name="stock_availability_msg">OPPS! THAT STOCK SYMBOL IS NOT AVAILABLE</string>
+    <string name="stock_symbol_empty_msg">PLEASE ENTER STOCK SYMBOL</string>
 </resources>
