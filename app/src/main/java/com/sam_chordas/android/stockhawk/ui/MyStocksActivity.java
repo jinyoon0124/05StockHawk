@@ -29,6 +29,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
+import com.sam_chordas.android.stockhawk.historical.DetailStocksActivity;
 import com.sam_chordas.android.stockhawk.rest.QuoteCursorAdapter;
 import com.sam_chordas.android.stockhawk.rest.RecyclerViewItemClickListener;
 import com.sam_chordas.android.stockhawk.rest.Utils;
@@ -50,6 +51,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private String mStockSymbol;
     private Intent mServiceIntent;
     private ItemTouchHelper mItemTouchHelper;
     private static final int CURSOR_LOADER_ID = 0;
@@ -117,7 +119,13 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                     public void onItemClick(View v, int position) {
                         //TODO: Launch Detail Activity with detailed information about the stock here (JY)
                         // do something on item click
-                        Toast.makeText(mContext, "Item Clicked", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(mContext, "Item Clicked", Toast.LENGTH_LONG).show();
+                        if(mCursor.moveToPosition(position)){
+                            mStockSymbol = mCursor.getString(mCursor.getColumnIndex("symbol"));
+                        }
+
+                        Intent intent = new Intent(mContext, DetailStocksActivity.class).putExtra("KK", mStockSymbol);
+                        startActivity(intent);
                     }
                 }));
         recyclerView.setAdapter(mCursorAdapter);
@@ -139,6 +147,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                                 public void onInput(MaterialDialog dialog, CharSequence input) {
                                     // On FAB click, receive user input. Make sure the stock doesn't already exist
                                     // in the DB and proceed accordingly
+
                                     Cursor c = getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
                                             new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
                                             new String[]{input.toString()}, null);
@@ -160,7 +169,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                             .show();
                 } else {
                     networkToast();
-                    //TODO: Handle emptyView here instead of toast message (JY)
 
                 }
 

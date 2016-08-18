@@ -76,7 +76,9 @@ public class StockTaskService extends GcmTaskService {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        if (params.getTag().equals("iit") || params.getTag().equals("periodic")) {
+//        if (params.getTag().equals("iit") || params.getTag().equals("periodic")) {
+
+        if (params.getTag().equals("periodic")) {
             isUpdate = true;
             initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
                     new String[]{"Distinct " + QuoteColumns.SYMBOL}, null,

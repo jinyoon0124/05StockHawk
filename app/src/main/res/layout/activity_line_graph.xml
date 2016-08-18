@@ -1,12 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/graph_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <com.db.chart.view.LineChartView
-        xmlns:chart="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/linechart"
+    <!--<com.db.chart.view.LineChartView-->
+        <!--xmlns:chart="http://schemas.android.com/apk/res-auto"-->
+        <!--android:id="@+id/linechart"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"/>-->
+
+    <TextView
+        android:id="@+id/graph_stock_symbol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="test"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+        <EditText
+            android:id="@+id/etxt_fromdate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/from_date"/>
+        <EditText
+            android:id="@+id/etxt_todate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/to_date"/>
 
-</FrameLayout>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        android:onClick="buttonClicked"/>
+
+</LinearLayout>

@@ -29,7 +29,9 @@ public class ListWidgetProvider extends AppWidgetProvider {
 //
             views.setRemoteAdapter(R.id.widget_list, new Intent(context, ListWidgetRemoteViewService.class));
 
+            //TODO: To be updated to detailactivity once implemented
             Intent clickIntentTemplate = new Intent(context, MyStocksActivity.class);
+
             PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
                     .addNextIntentWithParentStack(clickIntentTemplate)
                     .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

@@ -16,4 +16,6 @@
     <string name="stock_availability_key">availability</string>
     <string name="stock_availability_msg">OPPS! THAT STOCK SYMBOL IS NOT AVAILABLE</string>
     <string name="stock_symbol_empty_msg">PLEASE ENTER STOCK SYMBOL</string>
+    <string name="from_date">From Date</string>
+    <string name="to_date">To Date</string>
 </resources>
