@@ -1,7 +1,9 @@
 package com.sam_chordas.android.stockhawk.service;
 
+import android.app.FragmentManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import com.google.android.gms.gcm.TaskParams;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
+import com.sam_chordas.android.stockhawk.historical.DetailStocksActivity;
 import com.sam_chordas.android.stockhawk.historical.GraphFragment;
 import com.sam_chordas.android.stockhawk.historical.HistoricalObject;
 import com.sam_chordas.android.stockhawk.rest.Utils;
@@ -37,6 +40,8 @@ public class HistoricalTaskService extends GcmTaskService {
     private OkHttpClient client = new OkHttpClient();
     private Context mContext;
     private StringBuilder mStoredSymbols = new StringBuilder();
+
+    public static final String HISTORICAL_DATA_UPDATED = "com.example.sam_chordas.stockhawk.HISTORICAL_DATA_UPDATED";
 
 
     public HistoricalTaskService() {
@@ -107,16 +112,25 @@ public class HistoricalTaskService extends GcmTaskService {
                             historicalPriceList.add(historicalObjectList.get(i).getHistoricalPrice());
 //                            Log.v("HISTORICAL OBJECT", historicalObjectList.get(i).getHistoricalDate());
                         }
-                    //TODO: Intent to GraphFragment
+                    //Intent to draw graph
 //                        for (int i = 0; i < historicalObjectList.size(); i++) {
 //                            Log.v("HISTORICAL OBJECT", historicalDateList.get(i));
 //                        }
                         Bundle args = new Bundle();
-                        args.putStringArrayList("DATE", historicalDateList);
-                        args.putStringArrayList("PRICE", historicalPriceList);
+                        args.putStringArrayList("HISTORICALDATELIST", historicalDateList);
+                        args.putStringArrayList("HISTORICALPRICELIST", historicalPriceList);
 
-                        GraphFragment graphFragment = new GraphFragment();
-                        graphFragment.setArguments(args);
+                        Intent intentForGraph = new Intent();
+                        intentForGraph.setAction(HISTORICAL_DATA_UPDATED);
+                        intentForGraph.putExtra("HISTORICAL_DATA", args);
+                        mContext.sendBroadcast(intentForGraph);
+//                        intentForFragment.putExtra("DATAFORFRAGMENT", args);
+//                        startActivity(intentForFragment);
+
+
+//                        GraphFragment graphFragment = new GraphFragment();
+//                        FragmentManager fm = ((DetailStocksActivity)geta
+//                        graphFragment.setArguments(args);
                     }
 //                    }else if(Utils.quoteJsonToContentVals(getResponse).size()==0){
 //                        SharedPreferences spf = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -143,10 +157,6 @@ public class HistoricalTaskService extends GcmTaskService {
             }
         }
 
-
-        //TODO: Add Intent to initiate drawgraph() method in DetailStocksActivity.class
-        //with historical Object that is sent back from Utils
-        //DetailActivity -> IntentService -> HistoricalTaskService -> Utils (parse JSON and put them in historicalObject) -> Initiate drawgraph with Historical Object
 
         return result;
 

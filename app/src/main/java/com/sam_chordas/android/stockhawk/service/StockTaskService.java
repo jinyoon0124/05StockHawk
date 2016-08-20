@@ -107,6 +107,7 @@ public class StockTaskService extends GcmTaskService {
                     e.printStackTrace();
                 }
             }
+            updateWidgets();
         } else if (params.getTag().equals("add")) {
             isUpdate = false;
             // get symbol from params.getExtra and build query
@@ -146,11 +147,15 @@ public class StockTaskService extends GcmTaskService {
                     //Updated data applied to content resolver
 
                     Log.v("GETRESPONSE", getResponse);
+
+                    //Successful download
                     if(Utils.quoteJsonToContentVals(getResponse).size()!=0 && Utils.quoteJsonToContentVals(getResponse).get(0)!=null){
                         mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
                                 Utils.quoteJsonToContentVals(getResponse));
                         //Log.v("PACKAGENAME : ", mContext.getPackageName());
                         updateWidgets();
+
+                    //no input handling
                     }else if(Utils.quoteJsonToContentVals(getResponse).size()==0){
                         SharedPreferences spf = PreferenceManager.getDefaultSharedPreferences(mContext);
                         SharedPreferences.Editor spe = spf.edit();
@@ -158,6 +163,8 @@ public class StockTaskService extends GcmTaskService {
                         spe.apply();
                         mContext.getContentResolver().notifyChange(QuoteProvider.Quotes.CONTENT_URI, null);
                     }
+
+                    //Unavailable input handling
                     else{
                         Log.v("ERRORROR", "OPPS! THAT STOCK IS NOT AVAILABLE");
                         SharedPreferences spf = PreferenceManager.getDefaultSharedPreferences(mContext);

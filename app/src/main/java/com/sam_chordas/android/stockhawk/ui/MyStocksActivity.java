@@ -121,7 +121,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                             mStockSymbol = mCursor.getString(mCursor.getColumnIndex("symbol"));
                         }
 
-                        Intent intent = new Intent(mContext, DetailStocksActivity.class).putExtra("KK", mStockSymbol);
+                        Intent intent = new Intent(mContext, DetailStocksActivity.class).putExtra("SYMBOL", mStockSymbol);
                         startActivity(intent);
                     }
                 }));

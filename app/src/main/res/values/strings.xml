@@ -18,4 +18,5 @@
     <string name="stock_symbol_empty_msg">PLEASE ENTER STOCK SYMBOL</string>
     <string name="from_date">From Date</string>
     <string name="to_date">To Date</string>
+    <string name="graph_empty_msg_string">Please select dates to draw a graph</string>
 </resources>

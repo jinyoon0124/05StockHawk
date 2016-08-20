@@ -12,7 +12,11 @@ import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.historical.DetailStocksActivity;
 import com.sam_chordas.android.stockhawk.historical.HistoricalObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -114,8 +118,6 @@ public class Utils {
         return change;
     }
 
-
-
     public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject) {
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                 QuoteProvider.Quotes.CONTENT_URI);
@@ -170,5 +172,23 @@ public class Utils {
         return builder.build();
     }
 
+    public static float getFloatBidPrice(String bidPrice){
+        return Float.parseFloat(bidPrice);
+    }
+
+    public static float getFloatDate(String date){
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+
+        try {
+            Date interDate = dateFormatter.parse(date);
+            long timeInMil = interDate.getTime();
+            return timeInMil;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+
+    }
 
 }
