@@ -1,11 +1,16 @@
 package com.sam_chordas.android.stockhawk.rest;
 
 import android.content.ContentProviderOperation;
+import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
+import com.sam_chordas.android.stockhawk.historical.DetailStocksActivity;
+import com.sam_chordas.android.stockhawk.historical.HistoricalObject;
 
 import java.util.ArrayList;
 
@@ -52,6 +57,41 @@ public class Utils {
         return batchOperations;
     }
 
+    public static ArrayList<HistoricalObject> historicalJsonToObject(String JSON){
+        JSONObject jsonObject = null;
+        JSONArray resultsArray = null;
+        ArrayList<HistoricalObject> historicalObjectsList = new ArrayList<>();
+
+        try {
+            jsonObject = new JSONObject(JSON);
+            if (jsonObject != null && jsonObject.length() != 0) {
+                jsonObject = jsonObject.getJSONObject("query");
+                resultsArray = jsonObject.getJSONObject("results").getJSONArray("quote");
+
+                if (resultsArray != null && resultsArray.length() != 0) {
+                    for (int i = resultsArray.length(); i >0 ; i--) {
+                        HistoricalObject historicalObject = new HistoricalObject();
+
+                        jsonObject = resultsArray.getJSONObject(i-1);
+                        String date = jsonObject.getString("Date");
+                        String price = truncateBidPrice(jsonObject.getString("Close"));
+//                        Log.v("HISTORICAL TASK DATE", date);
+//                        Log.v("HISTORICAL TASK PRICE", price);
+
+                        historicalObject.setHistoricalDate(date);
+                        historicalObject.setHistoricalPrice(price);
+                        historicalObjectsList.add(historicalObject);
+                    }
+                }
+            }
+            } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        return historicalObjectsList;
+    }
+
     public static String truncateBidPrice(String bidPrice) {
         bidPrice = String.format("%.2f", Float.parseFloat(bidPrice));
         return bidPrice;
@@ -74,11 +114,12 @@ public class Utils {
         return change;
     }
 
+
+
     public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject) {
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                 QuoteProvider.Quotes.CONTENT_URI);
         //
-
         try {
             String change = jsonObject.getString("Change");
             String symbol = jsonObject.getString("symbol");

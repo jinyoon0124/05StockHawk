@@ -4,7 +4,8 @@
     android:id="@+id/graph_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="10">
 
     <!--<com.db.chart.view.LineChartView-->
         <!--xmlns:chart="http://schemas.android.com/apk/res-auto"-->
@@ -14,8 +15,13 @@
 
     <TextView
         android:id="@+id/graph_stock_symbol"
+        style="@style/StockSymbolTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="@dimen/list_item_padding"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_weight="1"
         android:text="test"/>
 
     <LinearLayout
@@ -37,15 +43,12 @@
             android:hint="@string/to_date"/>
 
     </LinearLayout>
-    <TextView
-        android:id="@+id/test"
-        android:layout_width="wrap_content"
+    <fragment
+        android:id="@+id/graph_fragment_component"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        android:onClick="buttonClicked"/>
+        android:layout_weight="8"
+        android:name="com.sam_chordas.android.stockhawk.historical.GraphFragment"/>
+
 
 </LinearLayout>

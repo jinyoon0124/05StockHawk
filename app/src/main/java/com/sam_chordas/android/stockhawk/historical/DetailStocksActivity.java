@@ -24,21 +24,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sam_chordas.android.stockhawk.R;
+import com.sam_chordas.android.stockhawk.service.StockIntentService;
 import com.squareup.okhttp.Callback;
 
 import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class DetailStocksActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private String mStartDate, mEndDate;
     private EditText fromDateEtxt, toDateEtxt;
+    private String mFromDate, mToDate;
     private DatePickerDialog fromDatePickerDialog, toDatePickerDialog;
     private SimpleDateFormat dateFormatter;
+    private Intent mServiceIntent;
+    private String mStockSymbol;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +53,10 @@ public class DetailStocksActivity extends AppCompatActivity implements View.OnCl
 
 //        Toast.makeText(DetailStocksActivity.this, "Detail Activity Activated", Toast.LENGTH_SHORT).show();
         Intent intent = getIntent();
-        String stockSymbol = intent.getStringExtra("KK");
+        mStockSymbol = intent.getStringExtra("KK");
 
         TextView stockSymbolView = (TextView) findViewById(R.id.graph_stock_symbol);
+        mServiceIntent = new Intent(this, StockIntentService.class);
 
         fromDateEtxt = (EditText) findViewById(R.id.etxt_fromdate);
         fromDateEtxt.setInputType(InputType.TYPE_NULL);
@@ -63,7 +70,7 @@ public class DetailStocksActivity extends AppCompatActivity implements View.OnCl
         dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
 
-        stockSymbolView.setText(stockSymbol);
+        stockSymbolView.setText(mStockSymbol);
 
     }
 
@@ -77,12 +84,13 @@ public class DetailStocksActivity extends AppCompatActivity implements View.OnCl
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 Calendar newDate = Calendar.getInstance();
                 newDate.set(year, monthOfYear, dayOfMonth);
-                long time = newDate.getTimeInMillis();
-                fromDatePickerDialog.getDatePicker().setMinDate(time);
+
                 fromDateEtxt.setText(dateFormatter.format(newDate.getTime()));
+
             }
         }, ca.get(Calendar.YEAR), ca.get(Calendar.MONTH), ca.get(Calendar.DAY_OF_MONTH));
         fromDatePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+
 
         toDatePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -91,19 +99,44 @@ public class DetailStocksActivity extends AppCompatActivity implements View.OnCl
                 newDate.set(year, monthOfYear, dayOfMonth);
                 toDateEtxt.setText(dateFormatter.format(newDate.getTime()));
 
-                TextView test = (TextView) findViewById(R.id.test);
 
                 if(fromDateEtxt.getText().toString().equals("")
                         || toDateEtxt.getText().toString().equals("")){
                     Toast.makeText(DetailStocksActivity.this, "PLEASE SELECT DATES", Toast.LENGTH_SHORT).show();
-                    //TODO: Initiate task service here
                 }else{
-                    test.setText(fromDateEtxt.getText());
+                    try {
+                        if(!fromDateEtxt.getText().toString().equals("")) {
+                            mFromDate = fromDateEtxt.getText().toString();
+                            mToDate = toDateEtxt.getText().toString();
+                            long fromTime = dateFormatter.parse(mFromDate).getTime();
+                            long toTime = dateFormatter.parse(mToDate).getTime();
+
+                            if(toTime<fromTime){
+                                Toast.makeText(DetailStocksActivity.this, "TO SMALLER THAN FROM", Toast.LENGTH_SHORT).show();
+                            }else{
+                                //TODO: INITIATE TASK SERVICE HERE
+                                Toast.makeText(DetailStocksActivity.this, "TASK SERVICE INITIATED", Toast.LENGTH_SHORT).show();
+                                mServiceIntent.putExtra("tag", "historical");
+                                mServiceIntent.putExtra("symbol", mStockSymbol);
+                                mServiceIntent.putExtra("fromdate", mFromDate);
+                                mServiceIntent.putExtra("todate", mToDate);
+                                startService(mServiceIntent);
+                            }
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
+
+
+
             }
         }, ca.get(Calendar.YEAR), ca.get(Calendar.MONTH), ca.get(Calendar.DAY_OF_MONTH));
+        toDatePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
 
-//        toDatePickerDialog.getDatePicker().setMinDate(fromDatePickerDialog.getDatePicker().getMinDate());
+
+
+        //        toDatePickerDialog.getDatePicker().setMinDate(fromDatePickerDialog.getDatePicker().getMinDate());
 
     }
     @Override
@@ -130,12 +163,8 @@ public class DetailStocksActivity extends AppCompatActivity implements View.OnCl
     }
 
 
-    public void buttonClicked(View view) {
-        TextView test = (TextView) findViewById(R.id.test);
-        if(fromDateEtxt.getText().toString().equals("")){
-            test.setText("null");
-        }else{
-            test.setText(fromDateEtxt.getText());
-        }
-    }
+
+//    public static void drawgraph(ArrayList<>){
+//        TextView test = (TextView) DetailStocksActivity.this.findViewById()
+//    }
 }

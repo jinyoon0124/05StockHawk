@@ -85,7 +85,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 //                startService(mServiceIntent);
 //            } else {
 //                networkToast();
-//                //TODO: Handle emptyView here instead of toast message (JY)
 //
 //            }
 //        }
@@ -117,9 +116,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 new RecyclerViewItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View v, int position) {
-                        //TODO: Launch Detail Activity with detailed information about the stock here (JY)
                         // do something on item click
-//                        Toast.makeText(mContext, "Item Clicked", Toast.LENGTH_LONG).show();
                         if(mCursor.moveToPosition(position)){
                             mStockSymbol = mCursor.getString(mCursor.getColumnIndex("symbol"));
                         }
