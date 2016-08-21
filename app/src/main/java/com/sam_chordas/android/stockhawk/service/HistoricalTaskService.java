@@ -24,6 +24,7 @@ import com.sam_chordas.android.stockhawk.rest.Utils;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import com.squareup.okhttp.internal.Util;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -105,49 +106,17 @@ public class HistoricalTaskService extends GcmTaskService {
                     ArrayList<HistoricalObject> historicalObjectList;
                     ArrayList<String> historicalDateList = new ArrayList<>();
                     ArrayList<String> historicalPriceList = new ArrayList<>();
-                    historicalObjectList = Utils.historicalJsonToObject(getResponse);
-                    if (historicalObjectList.size() != 0) {
-                        for (int i = 0; i < historicalObjectList.size(); i++) {
-                            historicalDateList.add(historicalObjectList.get(i).getHistoricalDate());
-                            historicalPriceList.add(historicalObjectList.get(i).getHistoricalPrice());
-//                            Log.v("HISTORICAL OBJECT", historicalObjectList.get(i).getHistoricalDate());
-                        }
-                    //Intent to draw graph
-//                        for (int i = 0; i < historicalObjectList.size(); i++) {
-//                            Log.v("HISTORICAL OBJECT", historicalDateList.get(i));
-//                        }
-                        Bundle args = new Bundle();
-                        args.putStringArrayList("HISTORICALDATELIST", historicalDateList);
-                        args.putStringArrayList("HISTORICALPRICELIST", historicalPriceList);
+//                    historicalObjectList = Utils.historicalJsonToObject(getResponse);
+                    historicalDateList= Utils.getDateFromJson(getResponse);
+                    historicalPriceList= Utils.getPriceFromJson(getResponse);
+                    Bundle args = new Bundle();
+                    args.putStringArrayList("HISTORICALDATELIST", historicalDateList);
+                    args.putStringArrayList("HISTORICALPRICELIST", historicalPriceList);
 
-                        Intent intentForGraph = new Intent();
-                        intentForGraph.setAction(HISTORICAL_DATA_UPDATED);
-                        intentForGraph.putExtra("HISTORICAL_DATA", args);
-                        mContext.sendBroadcast(intentForGraph);
-//                        intentForFragment.putExtra("DATAFORFRAGMENT", args);
-//                        startActivity(intentForFragment);
-
-
-//                        GraphFragment graphFragment = new GraphFragment();
-//                        FragmentManager fm = ((DetailStocksActivity)geta
-//                        graphFragment.setArguments(args);
-                    }
-//                    }else if(Utils.quoteJsonToContentVals(getResponse).size()==0){
-//                        SharedPreferences spf = PreferenceManager.getDefaultSharedPreferences(mContext);
-//                        SharedPreferences.Editor spe = spf.edit();
-//                        spe.putString(mContext.getString(R.string.stock_availability_key), mContext.getString(R.string.stock_symbol_empty_msg));
-//                        spe.apply();
-//                        mContext.getContentResolver().notifyChange(QuoteProvider.Quotes.CONTENT_URI, null);
-//                    }
-//                    else{
-//                        Log.v("ERRORROR", "OPPS! THAT STOCK IS NOT AVAILABLE");
-//                        SharedPreferences spf = PreferenceManager.getDefaultSharedPreferences(mContext);
-//                        SharedPreferences.Editor spe = spf.edit();
-//                        spe.putString(mContext.getString(R.string.stock_availability_key), mContext.getString(R.string.stock_availability_msg));
-//                        spe.apply();
-//                        mContext.getContentResolver().notifyChange(QuoteProvider.Quotes.CONTENT_URI, null);
-//                        return result;
-//                    }
+                    Intent intentForGraph = new Intent();
+                    intentForGraph.setAction(HISTORICAL_DATA_UPDATED);
+                    intentForGraph.putExtra("HISTORICAL_DATA", args);
+                    mContext.sendBroadcast(intentForGraph);
 
                 } catch (Exception e) {
                     e.printStackTrace();

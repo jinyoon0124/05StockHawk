@@ -36,7 +36,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.AxisValueFormatter;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.rest.Utils;
 import com.sam_chordas.android.stockhawk.service.HistoricalTaskService;
@@ -66,6 +67,7 @@ public class DetailStocksActivity extends AppCompatActivity implements View.OnCl
     private String mStockSymbol;
     private BroadcastReceiver mReceiver;
     private Context mContext;
+    private ArrayList<String> dateList;
 
 
     @Override
@@ -83,16 +85,7 @@ public class DetailStocksActivity extends AppCompatActivity implements View.OnCl
         mChart.setNoDataTextDescription(getString(R.string.graph_empty_msg_string));
 
         Intent intent = getIntent();
-//        if(intent.hasExtra("SYMBOL")){
         mStockSymbol = intent.getStringExtra("SYMBOL");
-//        }else if (intent.hasExtra("DATAFORFRAGMENT")){
-//            Log.v(LOG_TAG, "intent DATA FOR FRAGMENT Activated");
-//            Bundle args = intent.getBundleExtra("DATAFORFRAGMENT");
-//            FragmentManager fm = this.getFragmentManager();
-//            GraphFragment gf = new GraphFragment();
-//            gf.setArguments(args);
-//            fm.beginTransaction().commit();
-//        }
 
         mServiceIntent = new Intent(this, StockIntentService.class);
 
@@ -116,60 +109,69 @@ public class DetailStocksActivity extends AppCompatActivity implements View.OnCl
 
     @TargetApi(Build.VERSION_CODES.M)
     private void drawGraph(Intent intent) {
+
         Bundle args = intent.getBundleExtra("HISTORICAL_DATA");
-        final ArrayList<String> dateList = args.getStringArrayList("HISTORICALDATELIST");
+        dateList = args.getStringArrayList("HISTORICALDATELIST");
         ArrayList<String> priceList = args.getStringArrayList("HISTORICALPRICELIST");
 
         List<Entry> entryValues = new ArrayList<>();
 
         for(int i = 0; i<dateList.size();i++){
-//            Log.v(LOG_TAG + " DATE in Mil : ", String.valueOf(Utils.getFloatDate(dateList.get(i))));
+//            Log.v(LOG_TAG + " DATE : ", String.valueOf(Utils.getFloatDate(dateList.get(i))));
 //            Log.v(LOG_TAG + " PRICE : ", String.valueOf(Utils.getFloatBidPrice(priceList.get(i))));
-            Entry item = new Entry(Utils.getFloatDate(dateList.get(i)), Utils.getFloatBidPrice(priceList.get(i)));
+            Entry item = new Entry((float)i, Utils.getFloatBidPrice(priceList.get(i)));
+            Log.v(LOG_TAG + " INDEX : ", String.valueOf((float)i));
+            Log.v(LOG_TAG + " DATE : ", dateList.get((int)(float)i));
             entryValues.add(item);
 
         }
 
-        final String[] xAxisLabel =dateList.toArray(new String[dateList.size()]);
-
         LineDataSet setEntryValues = new LineDataSet(entryValues, mStockSymbol);
         LineData lineStockData = new LineData(setEntryValues);
-        if(entryValues.size()<10){
-            setEntryValues.setValueTextSize(10f);
-            setEntryValues.setValueTextColor(getColor(R.color.white));
-        }else{
-            setEntryValues.setDrawValues(false);
-        }
         mChart.setData(lineStockData);
         XAxis label = mChart.getXAxis();
         label.setTextColor(getColor(R.color.white));
-//        label.setValueFormatter(new DateAxisValueFormatter(xAxisLabel));
+        label.setValueFormatter(new AxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                Log.v(LOG_TAG + " FORMAT VALUE : ", String.valueOf(value));
+                if(value<dateList.size()){
+                    return dateList.get((int)value);
+                }else{
+                    return null;
+                }
+            }
+
+            @Override
+            public int getDecimalDigits() {
+                return 0;
+            }
+        });
+
+        label.setGranularityEnabled(true);
+
+        if(entryValues.size()<10){
+            setEntryValues.setValueTextSize(10f);
+            setEntryValues.setValueTextColor(getColor(R.color.white));
+            label.setGranularity(1);
+
+        }else{
+//            setEntryValues.setDrawValues(false);
+//            label.setGranularity(Math.round(entryValues.size()/5));
+            setEntryValues.setDrawValues(true);
+//            mChart.setMaxVisibleValueCount(5);
+            label.setLabelCount(5);
+
+
+        }
+
+
         mChart.getAxisLeft().setTextColor(getColor(R.color.white));
         mChart.getAxisRight().setEnabled(false);
-//        mChart.getContentDescription().
         mChart.getLegend().setEnabled(false);
         mChart.setDescription("");
 
         mChart.invalidate();
-
-//
-//        List<Entry> valsComp1 = new ArrayList<>();
-//
-//        Entry c1e1 = new Entry(0f, 10000f);
-//        Entry c1e2 = new Entry(1f, 14000f);
-//        valsComp1.add(c1e1);
-//        valsComp1.add(c1e2);
-//
-//        LineDataSet setComp1 = new LineDataSet(valsComp1, "COMPANY 1");
-////        setComp1.setAxisDependency(YAxis.AxisDependency.LEFT);
-//
-//        LineData lineData = new LineData(setComp1);
-//        mChart.setData(lineData);
-//        mChart.invalidate();
-
-
-
-
 
     }
 
@@ -198,6 +200,8 @@ public class DetailStocksActivity extends AppCompatActivity implements View.OnCl
 
                 fromDateEtxt.setText(dateFormatter.format(newDate.getTime()));
 
+                historicalTaskServiceInitiator();
+
             }
         }, ca.get(Calendar.YEAR), ca.get(Calendar.MONTH), ca.get(Calendar.DAY_OF_MONTH));
         fromDatePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
@@ -210,37 +214,7 @@ public class DetailStocksActivity extends AppCompatActivity implements View.OnCl
                 newDate.set(year, monthOfYear, dayOfMonth);
                 toDateEtxt.setText(dateFormatter.format(newDate.getTime()));
 
-
-                if(fromDateEtxt.getText().toString().equals("")
-                        || toDateEtxt.getText().toString().equals("")){
-                    Toast.makeText(DetailStocksActivity.this, "PLEASE SELECT DATES", Toast.LENGTH_SHORT).show();
-                }else{
-                    try {
-                        if(!fromDateEtxt.getText().toString().equals("")) {
-                            mFromDate = fromDateEtxt.getText().toString();
-                            mToDate = toDateEtxt.getText().toString();
-                            long fromTime = dateFormatter.parse(mFromDate).getTime();
-                            long toTime = dateFormatter.parse(mToDate).getTime();
-
-                            if(toTime<fromTime){
-                                Toast.makeText(DetailStocksActivity.this, "TO SMALLER THAN FROM", Toast.LENGTH_SHORT).show();
-                            }else{
-                                // INITIATE TASK SERVICE HERE
-                                Toast.makeText(DetailStocksActivity.this, "TASK SERVICE INITIATED", Toast.LENGTH_SHORT).show();
-                                mServiceIntent.putExtra("tag", "historical");
-                                mServiceIntent.putExtra("symbol", mStockSymbol);
-                                mServiceIntent.putExtra("fromdate", mFromDate);
-                                mServiceIntent.putExtra("todate", mToDate);
-                                startService(mServiceIntent);
-                            }
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-
+                historicalTaskServiceInitiator();
             }
         }, ca.get(Calendar.YEAR), ca.get(Calendar.MONTH), ca.get(Calendar.DAY_OF_MONTH));
         toDatePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
@@ -250,6 +224,66 @@ public class DetailStocksActivity extends AppCompatActivity implements View.OnCl
         //        toDatePickerDialog.getDatePicker().setMinDate(fromDatePickerDialog.getDatePicker().getMinDate());
 
     }
+
+    private void historicalTaskServiceInitiator() {
+
+        mFromDate = fromDateEtxt.getText().toString();
+        mToDate = toDateEtxt.getText().toString();
+        try {
+
+            if(!mFromDate.equals("") && !mToDate.equals("")){
+                long fromTime = dateFormatter.parse(mFromDate).getTime();
+                long toTime = dateFormatter.parse(mToDate).getTime();
+
+                if(toTime<fromTime){
+                    Toast.makeText(mContext, getString(R.string.date_selector_to_smaller_than_from), Toast.LENGTH_SHORT).show();
+                }else{
+    //                Toast.makeText(DetailStocksActivity.this, "TASK SERVICE INITIATED", Toast.LENGTH_SHORT).show();
+                    mServiceIntent.putExtra("tag", "historical");
+                    mServiceIntent.putExtra("symbol", mStockSymbol);
+                    mServiceIntent.putExtra("fromdate", mFromDate);
+                    mServiceIntent.putExtra("todate", mToDate);
+                    startService(mServiceIntent);
+                }
+            }else if(mFromDate.equals("") && mToDate.equals("")){
+                Toast.makeText(mContext, getString(R.string.date_selector_to_and_from_empty), Toast.LENGTH_SHORT).show();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+
+//
+//        if(fromDateEtxt.getText().toString().equals("")
+//                || toDateEtxt.getText().toString().equals("")){
+//            Toast.makeText(DetailStocksActivity.this, "SELECT TO DATES", Toast.LENGTH_SHORT).show();
+//        }else{
+//            try {
+//                if(!fromDateEtxt.getText().toString().equals("")) {
+//                    mFromDate = fromDateEtxt.getText().toString();
+//                    mToDate = toDateEtxt.getText().toString();
+//                    long fromTime = dateFormatter.parse(mFromDate).getTime();
+//                    long toTime = dateFormatter.parse(mToDate).getTime();
+//
+//                    if(toTime<fromTime){
+//                        Toast.makeText(DetailStocksActivity.this, "TO SMALLER THAN FROM", Toast.LENGTH_SHORT).show();
+//                    }else{
+//                        // INITIATE TASK SERVICE HERE
+//                        Toast.makeText(DetailStocksActivity.this, "TASK SERVICE INITIATED", Toast.LENGTH_SHORT).show();
+//                        mServiceIntent.putExtra("tag", "historical");
+//                        mServiceIntent.putExtra("symbol", mStockSymbol);
+//                        mServiceIntent.putExtra("fromdate", mFromDate);
+//                        mServiceIntent.putExtra("todate", mToDate);
+//                        startService(mServiceIntent);
+//                    }
+//                }
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//        }
+    }
+
     @Override
     public void onClick(View v) {
         if(v == fromDateEtxt){

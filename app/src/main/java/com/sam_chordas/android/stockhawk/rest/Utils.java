@@ -61,10 +61,11 @@ public class Utils {
         return batchOperations;
     }
 
-    public static ArrayList<HistoricalObject> historicalJsonToObject(String JSON){
+    public static ArrayList<String> getDateFromJson(String JSON){
         JSONObject jsonObject = null;
         JSONArray resultsArray = null;
-        ArrayList<HistoricalObject> historicalObjectsList = new ArrayList<>();
+//        ArrayList<HistoricalObject> historicalObjectsList = new ArrayList<>();
+        ArrayList<String> dateList = new ArrayList<>();
 
         try {
             jsonObject = new JSONObject(JSON);
@@ -78,13 +79,9 @@ public class Utils {
 
                         jsonObject = resultsArray.getJSONObject(i-1);
                         String date = jsonObject.getString("Date");
-                        String price = truncateBidPrice(jsonObject.getString("Close"));
-//                        Log.v("HISTORICAL TASK DATE", date);
-//                        Log.v("HISTORICAL TASK PRICE", price);
+//                        String price = truncateBidPrice(jsonObject.getString("Close"));
 
-                        historicalObject.setHistoricalDate(date);
-                        historicalObject.setHistoricalPrice(price);
-                        historicalObjectsList.add(historicalObject);
+                        dateList.add(date);
                     }
                 }
             }
@@ -93,8 +90,40 @@ public class Utils {
         }
 
 
-        return historicalObjectsList;
+        return dateList;
     }
+
+    public static ArrayList<String> getPriceFromJson(String JSON){
+        JSONObject jsonObject = null;
+        JSONArray resultsArray = null;
+//        ArrayList<HistoricalObject> historicalObjectsList = new ArrayList<>();
+        ArrayList<String> priceList = new ArrayList<>();
+
+        try {
+            jsonObject = new JSONObject(JSON);
+            if (jsonObject != null && jsonObject.length() != 0) {
+                jsonObject = jsonObject.getJSONObject("query");
+                resultsArray = jsonObject.getJSONObject("results").getJSONArray("quote");
+
+                if (resultsArray != null && resultsArray.length() != 0) {
+                    for (int i = resultsArray.length(); i >0 ; i--) {
+
+                        jsonObject = resultsArray.getJSONObject(i-1);
+//                        String date = jsonObject.getString("Date");
+                        String price = truncateBidPrice(jsonObject.getString("Close"));
+
+                        priceList.add(price);
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        return priceList;
+    }
+
 
     public static String truncateBidPrice(String bidPrice) {
         bidPrice = String.format("%.2f", Float.parseFloat(bidPrice));
@@ -176,13 +205,13 @@ public class Utils {
         return Float.parseFloat(bidPrice);
     }
 
-    public static float getFloatDate(String date){
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+    public static long getFloatDate(String date){
+        String dateNewFormat = date + " 15:00:00";
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
         try {
-            Date interDate = dateFormatter.parse(date);
-            long timeInMil = interDate.getTime();
-            return timeInMil;
+            Date interDate = dateFormatter.parse(dateNewFormat);
+            return interDate.getTime();
         } catch (ParseException e) {
             e.printStackTrace();
         }
