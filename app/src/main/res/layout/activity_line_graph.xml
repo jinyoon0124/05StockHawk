@@ -34,21 +34,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
             android:hint="@string/from_date"/>
         <EditText
             android:id="@+id/etxt_todate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
             android:hint="@string/to_date"/>
 
     </LinearLayout>
-    <!--<fragment-->
-        <!--android:id="@+id/graph_fragment_component"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_weight="8"-->
-        <!--android:name="com.sam_chordas.android.stockhawk.historical.GraphFragment"/>-->
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/lineChart"
         android:layout_width="match_parent"

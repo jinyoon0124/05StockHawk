@@ -7,9 +7,12 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.widget.RemoteViews;
 
 import com.sam_chordas.android.stockhawk.R;
+import com.sam_chordas.android.stockhawk.data.QuoteProvider;
+import com.sam_chordas.android.stockhawk.historical.DetailStocksActivity;
 import com.sam_chordas.android.stockhawk.service.StockTaskService;
 import com.sam_chordas.android.stockhawk.ui.MyStocksActivity;
 
@@ -29,14 +32,14 @@ public class ListWidgetProvider extends AppWidgetProvider {
 //
             views.setRemoteAdapter(R.id.widget_list, new Intent(context, ListWidgetRemoteViewService.class));
 
-            //TODO: To be updated to detailactivity once implemented
-            Intent clickIntentTemplate = new Intent(context, MyStocksActivity.class);
-
+            Intent clickIntentTemplate = new Intent(context, DetailStocksActivity.class);
             PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
                     .addNextIntentWithParentStack(clickIntentTemplate)
                     .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setPendingIntentTemplate(R.id.widget_list, clickPendingIntentTemplate);
             views.setEmptyView(R.id.widget_list, R.id.widget_empty);
+
+
 
             appWidgetManager.updateAppWidget(appWidgetid, views);
 

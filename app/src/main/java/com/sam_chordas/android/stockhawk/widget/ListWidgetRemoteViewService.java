@@ -102,9 +102,11 @@ public class ListWidgetRemoteViewService extends RemoteViewsService{
                 views.setTextViewText(R.id.widget_change, stockPercentChange);
 
                 final Intent fillInIntent = new Intent();
-                Uri stockUri = QuoteProvider.Quotes.withSymbol(stockSymbol);
-                fillInIntent.setData(stockUri);
+//                Uri stockUri = QuoteProvider.Quotes.withSymbol(stockSymbol);
+//                fillInIntent.setData(stockUri);
+                fillInIntent.putExtra("SYMBOL", stockSymbol);
                 views.setOnClickFillInIntent(R.id.widget_list_item, fillInIntent);
+
                 return views;
             }
 

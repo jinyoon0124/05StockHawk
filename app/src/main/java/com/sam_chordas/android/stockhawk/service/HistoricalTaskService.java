@@ -1,30 +1,16 @@
 package com.sam_chordas.android.stockhawk.service;
 
-import android.app.FragmentManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.OperationApplicationException;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.RemoteException;
-import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
-import com.sam_chordas.android.stockhawk.R;
-import com.sam_chordas.android.stockhawk.data.QuoteColumns;
-import com.sam_chordas.android.stockhawk.data.QuoteProvider;
-import com.sam_chordas.android.stockhawk.historical.DetailStocksActivity;
-import com.sam_chordas.android.stockhawk.historical.GraphFragment;
-import com.sam_chordas.android.stockhawk.historical.HistoricalObject;
 import com.sam_chordas.android.stockhawk.rest.Utils;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import com.squareup.okhttp.internal.Util;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -103,7 +89,6 @@ public class HistoricalTaskService extends GcmTaskService {
                 result = GcmNetworkManager.RESULT_SUCCESS;
                 try {
                     // Need to handle JSON
-                    ArrayList<HistoricalObject> historicalObjectList;
                     ArrayList<String> historicalDateList = new ArrayList<>();
                     ArrayList<String> historicalPriceList = new ArrayList<>();
 //                    historicalObjectList = Utils.historicalJsonToObject(getResponse);

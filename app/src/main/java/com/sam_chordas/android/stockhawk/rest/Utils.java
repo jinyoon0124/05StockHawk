@@ -10,7 +10,6 @@ import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.historical.DetailStocksActivity;
-import com.sam_chordas.android.stockhawk.historical.HistoricalObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -64,7 +63,6 @@ public class Utils {
     public static ArrayList<String> getDateFromJson(String JSON){
         JSONObject jsonObject = null;
         JSONArray resultsArray = null;
-//        ArrayList<HistoricalObject> historicalObjectsList = new ArrayList<>();
         ArrayList<String> dateList = new ArrayList<>();
 
         try {
@@ -75,7 +73,6 @@ public class Utils {
 
                 if (resultsArray != null && resultsArray.length() != 0) {
                     for (int i = resultsArray.length(); i >0 ; i--) {
-                        HistoricalObject historicalObject = new HistoricalObject();
 
                         jsonObject = resultsArray.getJSONObject(i-1);
                         String date = jsonObject.getString("Date");
@@ -96,7 +93,6 @@ public class Utils {
     public static ArrayList<String> getPriceFromJson(String JSON){
         JSONObject jsonObject = null;
         JSONArray resultsArray = null;
-//        ArrayList<HistoricalObject> historicalObjectsList = new ArrayList<>();
         ArrayList<String> priceList = new ArrayList<>();
 
         try {

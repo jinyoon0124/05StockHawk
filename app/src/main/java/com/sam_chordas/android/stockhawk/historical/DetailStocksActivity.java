@@ -129,6 +129,19 @@ public class DetailStocksActivity extends AppCompatActivity implements View.OnCl
         LineDataSet setEntryValues = new LineDataSet(entryValues, mStockSymbol);
         LineData lineStockData = new LineData(setEntryValues);
         mChart.setData(lineStockData);
+        YAxis yAxis = mChart.getAxisLeft();
+        yAxis.setValueFormatter(new AxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return "$ "+String.valueOf((int)value) ;
+            }
+
+            @Override
+            public int getDecimalDigits() {
+                return 0;
+            }
+        });
+
         XAxis label = mChart.getXAxis();
         label.setTextColor(getColor(R.color.white));
         label.setValueFormatter(new AxisValueFormatter() {
