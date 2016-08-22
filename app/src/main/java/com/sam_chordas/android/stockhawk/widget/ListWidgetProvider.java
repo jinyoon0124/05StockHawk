@@ -27,10 +27,10 @@ public class ListWidgetProvider extends AppWidgetProvider {
         for(int appWidgetid : appWidgetIds){
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_stocklist);
 
-//            Intent intent = new Intent(context, MyStocksActivity.class);
-//            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-//            views.setOnClickPendingIntent(R.id.widget, pendingIntent);
-//
+            Intent intent = new Intent(context, MyStocksActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            views.setOnClickPendingIntent(R.id.widget, pendingIntent);
+
             views.setRemoteAdapter(R.id.widget_list,
                     new Intent(context, ListWidgetRemoteViewService.class));
 
@@ -51,8 +51,8 @@ public class ListWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        Log.v("PROVIDER CLASS : ", "WIDGET BROADCAST RECEIVED");
         if(StockTaskService.ACTION_DATA_UPDATED.equals(intent.getAction())){
+            Log.v("PROVIDER CLASS : ", "WIDGET BROADCAST RECEIVED");
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, getClass()));
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list);

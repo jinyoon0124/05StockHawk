@@ -84,7 +84,7 @@ public class StockTaskService extends GcmTaskService {
                     new String[]{"Distinct " + QuoteColumns.SYMBOL}, null,
                     null, null);
 //            if (initQueryCursor.getCount() == 0 || initQueryCursor == null) {
-//// Init task. Populates DB with quotes for the symbols seen below
+//              // Init task. Populates DB with quotes for the symbols seen below
 //                try {
 //                    urlStringBuilder.append(
 //                            URLEncoder.encode("\"YHOO\",\"AAPL\",\"GOOG\",\"MSFT\")", "UTF-8"));
@@ -92,7 +92,7 @@ public class StockTaskService extends GcmTaskService {
 //                    e.printStackTrace();
 //                }
 //            } else
-            if (initQueryCursor != null) {
+            if (initQueryCursor != null && initQueryCursor.getCount()!=0) {
                 DatabaseUtils.dumpCursor(initQueryCursor);
                 initQueryCursor.moveToFirst();
                 for (int i = 0; i < initQueryCursor.getCount(); i++) {
@@ -106,8 +106,8 @@ public class StockTaskService extends GcmTaskService {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
+
             }
-            updateWidgets();
         } else if (params.getTag().equals("add")) {
             isUpdate = false;
             // get symbol from params.getExtra and build query
@@ -122,6 +122,7 @@ public class StockTaskService extends GcmTaskService {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
+
         }
         // finalize the URL for the API query.
         urlStringBuilder.append("&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables."
@@ -153,7 +154,7 @@ public class StockTaskService extends GcmTaskService {
                         mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
                                 Utils.quoteJsonToContentVals(getResponse));
                         //Log.v("PACKAGENAME : ", mContext.getPackageName());
-                        updateWidgets();
+//                        updateWidgets();
 
                     //no input handling
                     }else if(Utils.quoteJsonToContentVals(getResponse).size()==0){
@@ -182,7 +183,6 @@ public class StockTaskService extends GcmTaskService {
                 e.printStackTrace();
             }
         }
-
         return result;
     }
 

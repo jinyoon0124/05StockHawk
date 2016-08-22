@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
+import android.util.Log;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
@@ -52,13 +53,21 @@ public class ListWidgetRemoteViewService extends RemoteViewsService{
                     data.close();
                 }
 
+                Log.v("WIDGETREMOTEVIEWPROVIDE", " : onDataSetChanged is called");
+
                 final long identityToken = Binder.clearCallingIdentity();
                 Uri stockListUri = QuoteProvider.Quotes.CONTENT_URI;
+//                data = getContentResolver().query(stockListUri,
+//                        STOCK_COLUMNS,
+//                        null,
+//                        null,
+//                        null);
                 data = getContentResolver().query(stockListUri,
                         STOCK_COLUMNS,
-                        null,
-                        null,
+                        QuoteColumns.ISCURRENT + "= ? ",
+                        new String[]{"1"},
                         null);
+
                 Binder.restoreCallingIdentity(identityToken);
 
             }

@@ -60,6 +60,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     private Cursor mCursor;
     boolean isConnected;
     private TextView emptyView;
+    public static final String ACTION_DATA_UPDATED = "com.example.sam_chordas.stockhawk.ACTION_DATA_UPDATED";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,7 +180,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
         mTitle = getTitle();
         if (isConnected) {
-            long period = 3600L;
+            //Test for duplication in widgets... originally 3600L
+            long period = 60L;
             long flex = 10L;
             String periodicTag = "periodic";
 
@@ -262,12 +265,15 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        int adapterSize = mCursorAdapter.getItemCount();
 //        Log.v("ADAPTER SIZE 1", String.valueOf(mCursorAdapter.getItemCount()));
         mCursorAdapter.swapCursor(data);
         mCursor = data;
+        int adapterSize = mCursorAdapter.getItemCount();
+
         if(mCursorAdapter.getItemCount()!=0){
             emptyView.setVisibility(View.GONE);
+        }else{
+            emptyView.setVisibility(View.VISIBLE);
         }
 //        if(adapterSize!=0 && adapterSize==mCursorAdapter.getItemCount()){
 //            Toast.makeText(this, "OPPS! THAT STOCK IS NOT AVAILABLE", Toast.LENGTH_LONG).show();
@@ -282,7 +288,12 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         SharedPreferences.Editor spe = spf.edit();
         spe.remove(mContext.getString(R.string.stock_availability_key));
         spe.commit();
-        Log.v("ONLOADFINISHED CALLED", "ONLOADFINISHED IS CALLED");
+        Log.v("ONLOADFINISHED CALLED", "ONLOADFINISHED IS CALLED   SIZE : "+String.valueOf(adapterSize));
+
+        Intent dataUpdatedIntent = new Intent();
+        dataUpdatedIntent.setAction(ACTION_DATA_UPDATED);
+        mContext.sendBroadcast(dataUpdatedIntent);
+////        Log.v(LOG_TAG + " WIDGET : ", "updateWidget is called hereherehrehrehre");
     }
 
     @Override
