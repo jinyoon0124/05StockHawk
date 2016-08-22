@@ -62,6 +62,7 @@ public class ListWidgetRemoteViewService extends RemoteViewsService{
 //                        null,
 //                        null,
 //                        null);
+
                 data = getContentResolver().query(stockListUri,
                         STOCK_COLUMNS,
                         QuoteColumns.ISCURRENT + "= ? ",
