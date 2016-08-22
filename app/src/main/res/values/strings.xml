@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Stock Hawk</string>
+    <string name="app_name" translatable="false">Stock Hawk</string>
 
     <string name="action_example">Example action</string>
 
@@ -7,13 +7,13 @@
     <string name="action_change_units">Change Units</string>
     <string name="symbol_search">Symbol Search</string>
     <string name="content_test">Search for a Stock Symbol</string>
-    <string name="input_hint">FB</string>
+    <string name="input_hint" translatable="false">FB</string>
     <string name="input_prefill"></string>
-    <string name="network_toast">Uh-oh! This app requires an internet connection</string>
+    <string name="network_toast" >Uh-oh! This app requires an internet connection</string>
     <string name="empty_stock_list">No stock is available. please add stock using fab button</string>
     <string name="empty_stock_list_no_connection">No network service is available. Please check internet connection</string>
-    <string name="title_widget_list">StockList Widget</string>
-    <string name="stock_availability_key">availability</string>
+    <string name="title_widget_list" translatable="false">StockList Widget</string>
+    <string name="stock_availability_key" translatable="false">availability</string>
     <string name="stock_availability_msg">OPPS! THAT STOCK SYMBOL IS NOT AVAILABLE</string>
     <string name="stock_symbol_empty_msg">PLEASE ENTER STOCK SYMBOL</string>
     <string name="from_date">From Date</string>
@@ -21,5 +21,6 @@
     <string name="graph_empty_msg_string">Please select dates to draw a graph</string>
     <string name="date_selector_to_smaller_than_from">Please select To date later than From date</string>
     <string name="date_selector_to_and_from_empty">Please select to and from date to draw a graph</string>
-    <string name="title_detail_activity">Detail Stock Info</string>
+    <string name="title_detail_activity" translatable="false">Detail Stock Info</string>
+    <string name="stock_existing_msg">This stock is already saved!</string>
 </resources>
