@@ -21,4 +21,5 @@
     <string name="graph_empty_msg_string">Please select dates to draw a graph</string>
     <string name="date_selector_to_smaller_than_from">Please select To date later than From date</string>
     <string name="date_selector_to_and_from_empty">Please select to and from date to draw a graph</string>
+    <string name="title_detail_activity">Detail Stock Info</string>
 </resources>

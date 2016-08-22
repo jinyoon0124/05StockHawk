@@ -35,7 +35,9 @@
                 <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
             </intent-filter>
         </service>
+
         <service android:name=".service.StockIntentService" />
+
         <service
             android:name=".service.HistoricalTaskService"
             android:exported="true"
@@ -55,7 +57,7 @@
             android:label="@string/title_widget_list">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.sam_chordas.android.stockhawk.app.ACTION_DATA_UPDATED" />
+                <action android:name="com.example.sam_chordas.stockhawk.ACTION_DATA_UPDATED" />
             </intent-filter>
 
             <meta-data
@@ -67,7 +69,14 @@
             android:name=".widget.ListWidgetRemoteViewService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <activity android:name=".historical.DetailStocksActivity"></activity>
+        <activity
+            android:name=".historical.DetailStocksActivity"
+            android:label="@string/title_detail_activity"
+            android:parentActivityName=".ui.MyStocksActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MyStocksActivity"/>
+        </activity>
     </application>
 
 </manifest>

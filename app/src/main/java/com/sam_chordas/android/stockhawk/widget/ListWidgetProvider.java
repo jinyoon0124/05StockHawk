@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.sam_chordas.android.stockhawk.R;
@@ -30,7 +31,8 @@ public class ListWidgetProvider extends AppWidgetProvider {
 //            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 //            views.setOnClickPendingIntent(R.id.widget, pendingIntent);
 //
-            views.setRemoteAdapter(R.id.widget_list, new Intent(context, ListWidgetRemoteViewService.class));
+            views.setRemoteAdapter(R.id.widget_list,
+                    new Intent(context, ListWidgetRemoteViewService.class));
 
             Intent clickIntentTemplate = new Intent(context, DetailStocksActivity.class);
             PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
@@ -49,10 +51,11 @@ public class ListWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
+        Log.v("PROVIDER CLASS : ", "WIDGET BROADCAST RECEIVED");
         if(StockTaskService.ACTION_DATA_UPDATED.equals(intent.getAction())){
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            int[] appWidgetIDs = appWidgetManager.getAppWidgetIds(new ComponentName(context, getClass()));
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIDs, R.id.widget_list);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, getClass()));
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list);
         }
     }
 }
