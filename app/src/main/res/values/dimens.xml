@@ -7,9 +7,16 @@
          https://developer.android.com/design/patterns/navigation-drawer.html -->
     <dimen name="navigation_drawer_width">240dp</dimen>
     <dimen name="list_item_padding">10dp</dimen>
+    <dimen name="list_item_layout_height">72dp</dimen>
+    <dimen name="list_item_layout_padding">16dp</dimen>
+    <dimen name="list_item_stock_text_view_padding_right">10sp</dimen>
     <dimen name="widget_list_default_height">110dp</dimen>
     <dimen name="widget_list_default_width">250dp</dimen>
     <dimen name="widget_list_min_resize_height">110dp</dimen>
     <dimen name="widget_list_min_resize_width">250dp</dimen>
     <dimen name="calendar_view_margin">10dp</dimen>
+    <dimen name="stock_text_view_in_list_padding_right">10sp</dimen>
+    <dimen name="widget_stock_text_view_in_list_padding_right">10sp</dimen>
+    <dimen name="widget_change_text_view_in_list_padding">3dp</dimen>
+    <dimen name="list_item_change_text_view_padding">3dp</dimen>
 </resources>

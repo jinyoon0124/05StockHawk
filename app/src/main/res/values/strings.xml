@@ -23,4 +23,6 @@
     <string name="date_selector_to_and_from_empty">Please select to and from date to draw a graph</string>
     <string name="title_detail_activity" translatable="false">Detail Stock Info</string>
     <string name="stock_existing_msg">This stock is already saved!</string>
+    <string name="list_view_content_description">Click to view stock price over time</string>
+    <string name="fab_button_content_description">click to add stocks to the list</string>
 </resources>

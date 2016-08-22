@@ -12,7 +12,8 @@
         android:id="@+id/widget_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/widget_stocklist_item"/>
+        tools:listitem="@layout/widget_stocklist_item"
+        android:contentDescription="@string/list_view_content_description"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
