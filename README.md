@@ -22,15 +22,15 @@ From Android Studio: 1. **_Build_** menu 2. **_Generate Signed APK_**... 3. Fill
 
 ## Libraries
 
-* (MP Android Chart)[https://github.com/PhilJay/MPAndroidChart]
-* (Schematic)[https://github.com/SimonVT/schematic]
-* (OkHttp)[http://square.github.io/okhttp/]
-* (Floating Action Button)[https://github.com/makovkastar/FloatingActionButton]
-* (Material Dialog)[https://github.com/afollestad/material-dialogs]
+* [MP Android Chart](https://github.com/PhilJay/MPAndroidChart)
+* [Schematic](https://github.com/SimonVT/schematic)
+* [OkHttp](http://square.github.io/okhttp/)
+* [Floating Action Button](https://github.com/makovkastar/FloatingActionButton)
+* [Material Dialog](https://github.com/afollestad/material-dialogs)
 
 ## License
 
-'''
+```
 Copyright 2016 Jin Yoon
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,4 +44,4 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+```
